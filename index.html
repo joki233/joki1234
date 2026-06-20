@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>joki | 个人主页</title>
+    <meta
+      name="description"
+      content="joki 的个人主页，展示 GitHub、local_word_translator 项目、今日日期与高考倒计时。"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="water-surface" id="waterSurface" aria-hidden="true"></div>
+    <div class="page-shell">
+      <header class="hero glass-card violet-glow">
+        <div class="hero-copy">
+          <p class="eyebrow">PERSONAL PAGE</p>
+          <h1>你好，我是 <span>joki</span></h1>
+          <p class="hero-text">
+            喜欢把工具做得更顺手，也喜欢把界面打磨得更舒服。这里放着我的个人信息、代表项目，以及一些每天都会看到的小提醒。
+          </p>
+          <div class="hero-actions">
+            <a
+              class="primary-button"
+              href="https://github.com/joki233"
+              target="_blank"
+              rel="noreferrer"
+            >
+              前往 GitHub
+            </a>
+            <span class="status-pill">本地优先 · 简洁高效 · 持续迭代</span>
+          </div>
+        </div>
+      </header>
+
+      <main class="content-grid">
+        <section class="quote-card glass-card violet-glow">
+          <p class="section-label">DAILY QUOTE</p>
+          <blockquote class="quote-text" id="quoteText"></blockquote>
+          <cite class="quote-source" id="quoteSource"></cite>
+        </section>
+
+        <section class="profile-card glass-card violet-glow">
+          <div class="avatar-frame" id="avatarFrame">
+            <img
+              id="avatarImage"
+              src="image/head.png"
+              alt="joki 的头像"
+              loading="lazy"
+            />
+            <span class="avatar-fallback" aria-hidden="true">J</span>
+          </div>
+          <div class="profile-text">
+            <p class="section-label">ABOUT ME</p>
+            <h2>joki</h2>
+            <p class="subtitle">全栈开发者 / 工具爱好者 / 本地化效率流派</p>
+            <p class="bio">
+              我专注于把复杂能力封装成顺手的小工具，偏爱本地优先、低打扰、高反馈的产品体验。希望每个功能都足够直接，每次交互都足够自然。
+            </p>
+          </div>
+        </section>
+
+        <section class="project-card glass-card">
+          <div class="card-heading">
+            <p class="section-label">FEATURED PROJECT</p>
+            <h2>local_word_translator</h2>
+          </div>
+          <p class="project-subtitle">
+            Word Translator — 自动划词翻译工具
+          </p>
+          <p class="project-description">
+            基于 Ollama 本地大模型的自动划词翻译工具，采用 Win11 风格 UI。选中英文后自动弹出中文翻译，无需快捷键，无需联网，把解释出现的时机压缩到刚刚好的那一刻。
+          </p>
+          <div class="tag-group" aria-label="项目亮点">
+            <span>Ollama</span>
+            <span>本地大模型</span>
+            <span>自动划词</span>
+            <span>Win11 UI</span>
+            <span>离线可用</span>
+          </div>
+          <div class="project-actions">
+            <a
+              class="primary-button"
+              href="https://github.com/joki233/local_word_translator"
+              target="_blank"
+              rel="noreferrer"
+            >
+              查看项目仓库
+            </a>
+          </div>
+        </section>
+
+        <section class="calendar-card glass-card violet-glow">
+          <div class="card-heading">
+            <p class="section-label">TODAY</p>
+            <h2>今日日期</h2>
+          </div>
+          <div class="calendar-panel">
+            <div class="calendar-month" id="calendarMonth">--月</div>
+            <div class="calendar-day" id="calendarDay">--</div>
+            <div class="calendar-meta">
+              <p id="todayFullDate">---- 年 -- 月 -- 日</p>
+              <p id="todayWeekday">星期-</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="countdown-card glass-card violet-glow">
+          <div class="card-heading">
+            <p class="section-label">COUNTDOWN</p>
+            <h2>高考倒计时</h2>
+          </div>
+          <div class="countdown-number" id="countdownDays">--</div>
+          <p class="countdown-unit">距离 2027 年 6 月 7 日还有</p>
+          <p class="countdown-footnote" id="countdownStatus">
+            每一天都在靠近目标。
+          </p>
+        </section>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
