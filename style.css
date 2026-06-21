@@ -255,6 +255,7 @@ body::before {
 .project-card,
 .calendar-card,
 .countdown-card,
+.md-note-card,
 .quote-card {
   border-radius: 28px;
   padding: 28px;
@@ -314,6 +315,14 @@ body::before {
   --card-rotate: -1deg;
   grid-column: 8 / 13;
   grid-row: 2 / 3;
+}
+
+.md-note-card {
+  --card-x: 20px;
+  --card-y: -12px;
+  --card-rotate: 0.8deg;
+  grid-column: 7 / 12;
+  grid-row: 3 / 4;
 }
 
 .project-card {
@@ -485,6 +494,13 @@ body::before {
   }
 }
 
+.md-note-description {
+  margin: 18px 0 0;
+  color: var(--text-soft);
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
 @media (max-width: 960px) {
   .page-shell {
     width: min(100% - 32px, 1200px);
@@ -499,7 +515,8 @@ body::before {
   .calendar-card,
   .countdown-card,
   .project-card,
-  .quote-card {
+  .quote-card,
+  .md-note-card {
     --card-x: 0px;
     --card-y: 0px;
     --card-rotate: 0deg;
@@ -522,7 +539,8 @@ body::before {
   .project-card,
   .calendar-card,
   .countdown-card,
-  .quote-card {
+  .quote-card,
+  .md-note-card {
     padding: 22px;
     border-radius: 24px;
   }
