@@ -138,3 +138,7 @@ pickDailyQuote();
 document.querySelector(".md-note-card").addEventListener("click", () => {
   window.location.href = "notes.html";
 });
+
+document.querySelector(".project-card").addEventListener("click", () => {
+  window.open("https://github.com/joki233/local_word_translator", "_blank");
+});

@@ -112,18 +112,6 @@
         text-decoration: underline;
       }
 
-      .note-body h1,
-      .note-body h2,
-      .note-body h3,
-      .note-body h4,
-      .note-body h5,
-      .note-body h6 {
-        margin: 20px 0 10px;
-        font-size: 1.2rem;
-        color: var(--accent-strong);
-        font-weight: 700;
-      }
-
       .note-body ul,
       .note-body ol {
         margin: 0 0 14px 24px;
@@ -175,14 +163,41 @@
         border-collapse: collapse;
         width: 100%;
         margin: 0 0 14px;
+        font-size: 0.92rem;
       }
 
       .note-body th,
       .note-body td {
-        padding: 8px 12px;
+        padding: 8px 14px;
         border: 1px solid rgba(255, 255, 255, 0.16);
-        text-align: left;
+        text-align: center;
       }
+
+      .note-body th {
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--accent-strong);
+        font-weight: 700;
+      }
+
+      .note-body td {
+        color: var(--text-muted);
+      }
+
+      .note-body h1,
+      .note-body h2,
+      .note-body h3,
+      .note-body h4,
+      .note-body h5,
+      .note-body h6 {
+        margin: 20px 0 10px;
+        color: var(--accent-strong);
+        font-weight: 700;
+      }
+
+      .note-body h1 { font-size: 1.5rem; }
+      .note-body h2 { font-size: 1.35rem; }
+      .note-body h3 { font-size: 1.2rem; }
+      .note-body h4 { font-size: 1.1rem; }
 
       @media (max-width: 640px) {
         .notes-shell {
@@ -293,49 +308,165 @@
         });
       }
 
-      function renderMarkdown(text) {
-        let html = text
+      function escapeHtml(text) {
+        return text
           .replace(/&/g, "&amp;")
           .replace(/</g, "&lt;")
           .replace(/>/g, "&gt;");
+      }
 
-        html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (_, lang, code) => {
-          return `<pre><code>${code.trim()}</code></pre>`;
-        });
+      function renderMarkdown(text) {
+        const blocks = [];
+        const lines = text.split("\n");
+        let i = 0;
 
-        html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
+        function isTableRow(line) {
+          return /^\|.+\|$/.test(line.trim());
+        }
 
+        function isHr(line) {
+          return /^-{3,}$/.test(line.trim());
+        }
+
+        function isHeading(line) {
+          return /^#{1,4}\s/.test(line.trim());
+        }
+
+        function isBlockquote(line) {
+          return /^>\s?/.test(line.trim());
+        }
+
+        function isListItem(line) {
+          return /^-\s/.test(line.trim());
+        }
+
+        while (i < lines.length) {
+          const line = lines[i];
+
+          if (/^```/.test(line)) {
+            const codeLines = [];
+            i++;
+            while (i < lines.length && !/^```/.test(lines[i])) {
+              codeLines.push(lines[i]);
+              i++;
+            }
+            i++;
+            blocks.push({
+              type: "code",
+              content: escapeHtml(codeLines.join("\n"))
+            });
+            continue;
+          }
+
+          if (line.trim() === "") {
+            i++;
+            continue;
+          }
+
+          if (isHeading(line)) {
+            const trimmed = line.trim();
+            const level = trimmed.match(/^#+/)[0].length;
+            const content = trimmed.replace(/^#+\s*/, "");
+            blocks.push({ type: `h${level}`, content: renderInline(escapeHtml(content)) });
+            i++;
+            continue;
+          }
+
+          if (isHr(line)) {
+            blocks.push({ type: "hr" });
+            i++;
+            continue;
+          }
+
+          if (isBlockquote(line)) {
+            const quoteLines = [];
+            while (i < lines.length && isBlockquote(lines[i])) {
+              quoteLines.push(lines[i].trim().replace(/^>\s?/, ""));
+              i++;
+            }
+            const innerHtml = renderInline(escapeHtml(quoteLines.join("<br>")));
+            blocks.push({ type: "blockquote", content: innerHtml });
+            continue;
+          }
+
+          if (isTableRow(line) && i + 1 < lines.length && isTableRow(lines[i + 1])) {
+            const headers = line.split("|").filter(c => c.trim()).map(c => c.trim());
+            i += 2;
+            const rows = [];
+            while (i < lines.length && isTableRow(lines[i])) {
+              const cells = lines[i].split("|").filter(c => c.trim()).map(c => c.trim());
+              rows.push(cells);
+              i++;
+            }
+            blocks.push({
+              type: "table",
+              headers: headers.map(h => renderInline(escapeHtml(h))),
+              rows: rows.map(r => r.map(c => renderInline(escapeHtml(c))))
+            });
+            continue;
+          }
+
+          if (isListItem(line)) {
+            const items = [];
+            while (i < lines.length && isListItem(lines[i])) {
+              items.push(lines[i].trim().replace(/^-\s*/, ""));
+              i++;
+            }
+            blocks.push({
+              type: "ul",
+              items: items.map(item => renderInline(escapeHtml(item)))
+            });
+            continue;
+          }
+
+          const paraLines = [];
+          while (i < lines.length && lines[i].trim() !== "" &&
+                 !isHeading(lines[i]) && !isHr(lines[i]) &&
+                 !isBlockquote(lines[i]) && !/^```/.test(lines[i]) &&
+                 !isListItem(lines[i]) && !isTableRow(lines[i])) {
+            paraLines.push(lines[i]);
+            i++;
+          }
+          if (paraLines.length > 0) {
+            const paraHtml = paraLines
+              .map(l => renderInline(escapeHtml(l)))
+              .join("<br>");
+            blocks.push({ type: "p", content: paraHtml });
+          }
+        }
+
+        return blocks.map(b => {
+          switch (b.type) {
+            case "code": return `<pre><code>${b.content}</code></pre>`;
+            case "h1": return `<h1>${b.content}</h1>`;
+            case "h2": return `<h2>${b.content}</h2>`;
+            case "h3": return `<h3>${b.content}</h3>`;
+            case "h4": return `<h4>${b.content}</h4>`;
+            case "hr": return `<hr>`;
+            case "blockquote": return `<blockquote><p>${b.content}</p></blockquote>`;
+            case "p": return `<p>${b.content}</p>`;
+            case "ul": return `<ul>${b.items.map(item => `<li>${item}</li>`).join("")}</ul>`;
+            case "table":
+              const thead = `<thead><tr>${b.headers.map(h => `<th>${h}</th>`).join("")}</tr></thead>`;
+              const tbody = `<tbody>${b.rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody>`;
+              return `<table>${thead}${tbody}</table>`;
+            default: return "";
+          }
+        }).join("\n");
+      }
+
+      function renderInline(html) {
         html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
         html = html.replace(/~~(.+?)~~/g, "<s>$1</s>");
-
-        html = html.replace(/^#### (.+)$/gm, "<h4>$1</h4>");
-        html = html.replace(/^### (.+)$/gm, "<h3>$1</h3>");
-        html = html.replace(/^## (.+)$/gm, "<h2>$1</h2>");
-        html = html.replace(/^# (.+)$/gm, "<h1>$1</h1>");
-
-        html = html.replace(/^&gt; (.+)$/gm, "<blockquote><p>$1</p></blockquote>");
-
+        html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
         html = html.replace(
           /!\[([^\]]+)\]\(([^)]+)\)/g,
           '<img src="$2" alt="$1" style="max-width:100%;border-radius:12px;margin:12px 0" />'
         );
-
         html = html.replace(
           /\[((?:[^\[\]]|\[[^\]]*\])+)\]\(([^)]+)\)/g,
           '<a href="$2" target="_blank" rel="noreferrer">$1</a>'
         );
-
-        html = html.replace(/^- (.+)$/gm, "<li>$1</li>");
-        html = html.replace(/(<li>.*<\/li>\n?)+/g, "<ul>$&</ul>");
-
-        html = html.replace(/^---+$/gm, "<hr>");
-
-        html = html.replace(/\n\n/g, "</p><p>");
-        html = html.replace(/\n/g, "<br>");
-        html = "<p>" + html + "</p>";
-
-        html = html.replace(/<p>\s*<\/p>/g, "");
-
         return html;
       }
 

@@ -322,7 +322,8 @@ body::before {
   --card-y: -12px;
   --card-rotate: 0.8deg;
   grid-column: 7 / 12;
-  grid-row: 3 / 4;
+  grid-row: 3 / 5;
+  cursor: pointer;
 }
 
 .project-card {
@@ -331,6 +332,7 @@ body::before {
   --card-rotate: 1.35deg;
   grid-column: 3 / 11;
   grid-row: 5 / 7;
+  cursor: pointer;
 }
 
 .avatar-frame {
@@ -419,10 +421,6 @@ body::before {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-top: 24px;
-}
-
-.project-actions {
   margin-top: 24px;
 }
 
