@@ -12,15 +12,41 @@
   </head>
   <body>
     <div class="water-surface" id="waterSurface" aria-hidden="true"></div>
-    <div class="page-shell">
-      <header class="hero glass-card violet-glow">
-        <div class="hero-copy">
+    <div class="dash-shell">
+      <aside class="dash-sidebar">
+        <div class="sidebar-section">
+          <div class="sidebar-avatar" id="avatarFrame">
+            <img
+              id="avatarImage"
+              src="image/head.png"
+              alt="joki 的头像"
+              loading="lazy"
+            />
+            <span class="avatar-fallback" aria-hidden="true">J</span>
+          </div>
+          <div class="sidebar-profile">
+            <p class="section-label">ABOUT ME</p>
+            <h2 class="sidebar-name">joki</h2>
+            <p class="sidebar-bio">学生/oier/计算机爱好者</p>
+            <p class="sidebar-desc">喵喵喵</p>
+          </div>
+        </div>
+        <div class="sidebar-section sidebar-quote">
+          <p class="section-label">DAILY QUOTE</p>
+          <blockquote class="sidebar-quote-text" id="quoteText"></blockquote>
+          <cite class="sidebar-quote-source" id="quoteSource"></cite>
+        </div>
+      </aside>
+
+      <main class="dash-main">
+        <section class="dash-hero">
           <p class="eyebrow">PERSONAL PAGE</p>
-          <h1>你好，我是 <span>joki</span></h1>
-          <p class="hero-text">
-            这里放着我的个人信息、代表项目，以及一些每天都会看到的小提醒。
+          <h1 class="dash-hero-title" id="greetingText">喵~ <span>joki</span></h1>
+          <p class="dash-hero-text">
+            今天要干什么呢
           </p>
-          <div class="hero-actions">
+          <p class="dash-hero-greeting" id="greetingText"></p>
+          <div class="dash-hero-actions">
             <a
               class="primary-button"
               href="https://github.com/joki233"
@@ -38,46 +64,17 @@
               Luogu
             </a>
           </div>
-          
-        </div>
-      </header>
-
-      <main class="content-grid">
-        <section class="quote-card glass-card violet-glow">
-          <p class="section-label">DAILY QUOTE</p>
-          <blockquote class="quote-text" id="quoteText"></blockquote>
-          <cite class="quote-source" id="quoteSource"></cite>
         </section>
 
-        <section class="profile-card glass-card violet-glow">
-          <div class="avatar-frame" id="avatarFrame">
-            <img
-              id="avatarImage"
-              src="image/head.png"
-              alt="joki 的头像"
-              loading="lazy"
-            />
-            <span class="avatar-fallback" aria-hidden="true">J</span>
-          </div>
-          <div class="profile-text">
-            <p class="section-label">ABOUT ME</p>
-            <h2>joki</h2>
-            <p class="subtitle">学生/oier/计算机爱好者</p>
-            <p class="bio">
-              喵喵喵
-            </p>
-          </div>
-        </section>
+        <div class="dash-divider"></div>
 
-        <section class="project-card glass-card">
-          <div class="card-heading">
-            <p class="section-label">FEATURED PROJECT</p>
-            <h2>local_word_translator</h2>
-          </div>
-          <p class="project-subtitle">
+        <section class="dash-project" id="projectCard">
+          <p class="section-label">FEATURED PROJECT</p>
+          <h2 class="dash-project-title">local_word_translator</h2>
+          <p class="dash-project-subtitle">
             Word Translator — 自动划词翻译工具
           </p>
-          <p class="project-description">
+          <p class="dash-project-desc">
             基于 Ollama 本地大模型的自动划词翻译工具，采用 Win11 风格 UI。选中英文后自动弹出中文翻译，无需快捷键，无需联网，把解释出现的时机压缩到刚刚好的那一刻。
           </p>
           <div class="tag-group" aria-label="项目亮点">
@@ -88,8 +85,10 @@
             <span>离线可用</span>
           </div>
         </section>
+      </main>
 
-        <section class="calendar-card glass-card violet-glow">
+      <aside class="dash-rightbar">
+        <section class="glass-card violet-glow dash-card">
           <div class="card-heading">
             <p class="section-label">TODAY</p>
             <h2>今日日期</h2>
@@ -104,7 +103,7 @@
           </div>
         </section>
 
-        <section class="countdown-card glass-card violet-glow">
+        <section class="glass-card violet-glow dash-card">
           <div class="card-heading">
             <p class="section-label">COUNTDOWN</p>
             <h2>高考倒计时</h2>
@@ -116,7 +115,7 @@
           </p>
         </section>
 
-        <section class="md-note-card glass-card violet-glow">
+        <section class="glass-card violet-glow dash-card dash-card-clickable" id="mdNoteCard">
           <div class="card-heading">
             <p class="section-label">MD NOTES</p>
             <h2>我的笔记</h2>
@@ -125,7 +124,7 @@
             点击打开 md 文件夹，浏览我的 Markdown 笔记
           </p>
         </section>
-      </main>
+      </aside>
     </div>
 
     <script src="script.js"></script>

@@ -88,8 +88,8 @@ function updateCountdown() {
 }
 
 function setupAvatarFallback() {
-  const avatarImage = document.getElementById("avatarImage");
   const avatarFrame = document.getElementById("avatarFrame");
+  const avatarImage = document.getElementById("avatarImage");
 
   avatarImage.addEventListener("error", () => {
     avatarFrame.classList.add("is-fallback");
@@ -135,10 +135,25 @@ setupAvatarFallback();
 setupBackgroundRipple();
 pickDailyQuote();
 
-document.querySelector(".md-note-card").addEventListener("click", () => {
+function updateGreeting() {
+  const hour = new Date().getHours();
+  let greeting;
+  if (hour >= 6 && hour < 12) {
+    greeting = "早安";
+  } else if (hour >= 12 && hour < 18) {
+    greeting = "午安";
+  } else {
+    greeting = "晚安";
+  }
+  document.getElementById("greetingText").innerHTML = greeting + "喵~ <span>joki</span>";
+}
+
+updateGreeting();
+
+document.getElementById("mdNoteCard").addEventListener("click", () => {
   window.location.href = "notes.html";
 });
 
-document.querySelector(".project-card").addEventListener("click", () => {
+document.getElementById("projectCard").addEventListener("click", () => {
   window.open("https://github.com/joki233/local_word_translator", "_blank");
 });
