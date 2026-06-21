@@ -134,3 +134,7 @@ updateCountdown();
 setupAvatarFallback();
 setupBackgroundRipple();
 pickDailyQuote();
+
+document.querySelector(".md-note-card").addEventListener("click", () => {
+  window.location.href = "notes.html";
+});
