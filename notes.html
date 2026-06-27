@@ -83,13 +83,13 @@
       }
 
       .note-content {
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 360ms ease;
+        display: none;
+        opacity: 0;
+        transition: opacity 360ms ease;
       }
 
       .note-entry.open .note-content {
-        max-height: none;
+        display: block;
       }
 
       .note-body {
@@ -254,51 +254,58 @@
           let loaded = false;
 
           toggle.addEventListener("click", async () => {
-            entry.classList.toggle("open");
-
-            if (entry.classList.contains("open") && !loaded) {
-              loaded = true;
-              body.innerHTML = "<p style='color:var(--text-soft)'>加载中...</p>";
-
-              try {
-                let text;
-                if (loadedCache[filename]) {
-                  text = loadedCache[filename];
-                } else {
-                  const res = await fetch("md/" + encodeURIComponent(filename));
-                  if (!res.ok) throw new Error("加载失败");
-                  text = await res.text();
-                  loadedCache[filename] = text;
-                }
-                body.innerHTML = renderMarkdown(text);
-                const retryRenderMath = (retries = 5) => {
-                  if (typeof renderMathInElement === "function") {
-                    try {
-                      renderMathInElement(body, {
-                        delimiters: [
-                          { left: "$$", right: "$$", display: true },
-                          { left: "$", right: "$", display: false }
-                        ]
-                      });
-                    } catch (e) {
-                      if (retries > 0) {
-                        setTimeout(() => retryRenderMath(retries - 1), 500);
-                      }
-                    }
-                  } else if (retries > 0) {
-                    setTimeout(() => retryRenderMath(retries - 1), 500);
-                  }
-                };
-                retryRenderMath();
-              } catch {
-                body.innerHTML = "<p style='color:var(--text-soft)'>笔记加载失败，请检查文件是否存在。</p>";
-              }
-            }
-
-            if (entry.classList.contains("open")) {
-              content.style.maxHeight = content.scrollHeight + "px";
+            const isOpen = entry.classList.contains("open");
+            
+            if (isOpen) {
+              content.style.opacity = "0";
+              setTimeout(() => {
+                entry.classList.remove("open");
+                content.style.display = "none";
+              }, 360);
             } else {
-              content.style.maxHeight = "0";
+              entry.classList.add("open");
+              content.style.display = "block";
+              requestAnimationFrame(() => {
+                content.style.opacity = "1";
+              });
+              if (!loaded) {
+                loaded = true;
+                body.innerHTML = "<p style='color:var(--text-soft)'>加载中...</p>";
+
+                try {
+                  let text;
+                  if (loadedCache[filename]) {
+                    text = loadedCache[filename];
+                  } else {
+                    const res = await fetch("md/" + encodeURIComponent(filename));
+                    if (!res.ok) throw new Error("加载失败");
+                    text = await res.text();
+                    loadedCache[filename] = text;
+                  }
+                  body.innerHTML = renderMarkdown(text);
+                  const retryRenderMath = (retries = 5) => {
+                    if (typeof renderMathInElement === "function") {
+                      try {
+                        renderMathInElement(body, {
+                          delimiters: [
+                            { left: "$$", right: "$$", display: true },
+                            { left: "$", right: "$", display: false }
+                          ]
+                        });
+                      } catch (e) {
+                        if (retries > 0) {
+                          setTimeout(() => retryRenderMath(retries - 1), 500);
+                        }
+                      }
+                    } else if (retries > 0) {
+                      setTimeout(() => retryRenderMath(retries - 1), 500);
+                    }
+                  };
+                  retryRenderMath();
+                } catch {
+                  body.innerHTML = "<p style='color:var(--text-soft)'>笔记加载失败，请检查文件是否存在。</p>";
+                }
+              }
             }
           });
 
